@@ -26,4 +26,8 @@ class ArticleDAOMemoryImpl : ArticleDAO {
         return articlesInMemory;
     }
 
+    override fun selectLastOne(): Article? {
+        return articlesInMemory.last();
+    }
+
 }

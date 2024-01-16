@@ -6,8 +6,8 @@
     <data>
         <import type="com.example.tp_01.utils.DateConverter"/>
         <variable
-            name="article"
-            type="com.example.tp_01.bo.Article" />
+            name="vm"
+            type="com.example.tp_01.viewmodel.AjoutArticleViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +21,7 @@
             android:layout_height="51dp"
             android:layout_marginTop="20dp"
             android:ems="10"
-            android:text="@={article.titre}"
+            android:text="@={vm.titre}"
             android:hint="Titre"
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,7 @@
             android:layout_height="51dp"
             android:layout_marginTop="20dp"
             android:ems="10"
-            android:text="@={article.description}"
+            android:text="@={vm.description}"
             android:hint="Description"
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
             android:layout_marginTop="20dp"
             android:ems="10"
             android:hint="Prix"
-            android:text="@={`` + article.prix}"
+            android:text="@={`` + vm.prix}"
             android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,7 @@
             android:layout_marginTop="20dp"
             android:ems="10"
             android:hint="Sortie initiale"
-            android:text="@={DateConverter.dateToString(article.dateSortie)}"
+            android:text="@={DateConverter.dateToString(vm.dateSortie)}"
             android:inputType="date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.492"

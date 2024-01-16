@@ -13,7 +13,9 @@ import androidx.navigation.Navigation
 import com.example.tp_01.bo.Article
 import com.example.tp_01.repository.ArticleRepository
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.example.tp_01.viewmodel.ListeArticleViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +28,9 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ListeArticleFragment : Fragment() {
-    var lesArticles = ArticleRepository.getAllArticles();
+
+    val vmListe by viewModels<ListeArticleViewModel>();
+
 
 
     override fun onCreateView(
@@ -40,8 +44,9 @@ class ListeArticleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var lesArticles = vmListe.getArticlesList();
 
-        if (lesArticles.isEmpty())
+        if (lesArticles!!.isEmpty())
         {
             // AUCUN ARTICLE
         }

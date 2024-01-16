@@ -16,4 +16,8 @@ class ArticleDAONetworkImpl : ArticleDAO {
         TODO("Not yet implemented")
     }
 
+    override fun selectLastOne(): Article? {
+        TODO("Not yet implemented")
+    }
+
 }

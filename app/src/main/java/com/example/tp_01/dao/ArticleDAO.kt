@@ -8,4 +8,5 @@ interface ArticleDAO {
     fun addNewOne(article: Article): Long
 
     fun selectAll(): List<Article>
+    fun selectLastOne(): Article?
 }
