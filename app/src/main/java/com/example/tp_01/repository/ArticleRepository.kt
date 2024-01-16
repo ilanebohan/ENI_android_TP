@@ -14,10 +14,6 @@ class ArticleRepository () {
             return ArticleDao.selectbyId(id);
         }
 
-        fun getLastArticle() : Article? {
-            return ArticleDao.selectLastOne();
-        }
-
         fun addArticle(article : Article) : Long {
             return ArticleDao.addNewOne(article);
         }

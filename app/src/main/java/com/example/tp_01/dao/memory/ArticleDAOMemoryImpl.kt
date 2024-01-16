@@ -17,6 +17,10 @@ class ArticleDAOMemoryImpl : ArticleDAO {
        return articlesInMemory.find { it.id == id }
     }
 
+    override fun update(article: Article) {
+        TODO("Not yet implemented")
+    }
+
     override fun addNewOne(article: Article): Long {
         articlesInMemory.add(article);
         return article.id;
@@ -26,8 +30,9 @@ class ArticleDAOMemoryImpl : ArticleDAO {
         return articlesInMemory;
     }
 
-    override fun selectLastOne(): Article? {
-        return articlesInMemory.last();
+    override fun delete(article: Article) {
+        articlesInMemory.remove(article);
     }
+
 
 }

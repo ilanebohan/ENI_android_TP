@@ -2,6 +2,7 @@ package com.example.tp_01
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.example.tp_01.repository.ArticleRepository
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.example.tp_01.viewmodel.DetailArticleViewModel
 import com.example.tp_01.viewmodel.ListeArticleViewModel
 
 // TODO: Rename parameter arguments, choose names that match
@@ -27,9 +29,12 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ListeArticleFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+
+
+private const val TAG = "ListeArticleFragment";
 class ListeArticleFragment : Fragment() {
 
-    val vmListe by viewModels<ListeArticleViewModel>();
+    val vmListe by viewModels<ListeArticleViewModel> {ListeArticleViewModel.Factory};
 
 
 
@@ -44,15 +49,15 @@ class ListeArticleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var lesArticles = vmListe.getArticlesList();
+        vmListe.getArticlesList();
 
-        if (lesArticles!!.isEmpty())
+        if (vmListe.articlesFromMemory.value?.isEmpty() == true)
         {
             // AUCUN ARTICLE
         }
         else
         {
-            for (article in lesArticles) {
+            for (article in vmListe.articlesFromMemory.value!!) {
                 //listeNoms += article.titre + "\n";
                 val tv = TextView(context);
                 tv.text = article.titre;
@@ -71,11 +76,31 @@ class ListeArticleFragment : Fragment() {
 
         view.findViewById<Button>(R.id.btn_goToDetails).setOnClickListener {
 
-            val rnds = (0..lesArticles.size).random() // generated random from 0 to 10 included
-            val article = lesArticles[rnds];
+            val rnds = (0..vmListe.articlesFromMemory.value!!.size-1).random() // generated random from 0 to 10 included
+            val article = vmListe.articlesFromMemory.value!![rnds];
 
+            Log.i(TAG, "onViewCreated: " + article.toString());
             val direction = ListeArticleFragmentDirections.actionListeToDetails(article)
             Navigation.findNavController(view).navigate(direction)
+        }
+
+
+        view.findViewById<Button>(R.id.btn_articlesFav).setOnClickListener {
+            for (article in vmListe.ListeArticles.value!!) {
+                //listeNoms += article.titre + "\n";
+                val tv = TextView(context);
+                tv.text = article.titre;
+
+                view?.findViewById<LinearLayout>(R.id.linearLayoutArticles)?.addView(tv);
+
+                tv.setOnClickListener{
+                    val intent = Intent(Intent.ACTION_WEB_SEARCH);
+                    intent.putExtra("query", "eni-shop"+ article.titre);
+                    startActivity(intent);
+                }
+
+            }
+
         }
     }
 
