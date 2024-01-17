@@ -13,6 +13,7 @@ import com.example.tp_01.dao.DAOFactory
 import com.example.tp_01.dao.DAOType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 private const val TAG = "DetailArticleViewModel"
@@ -31,26 +32,29 @@ class DetailArticleViewModel(private val articleDAO: ArticleDAO) : ViewModel() {
         daoMemory.delete(article);
     }
 
-    fun isArticleInDb(article : Article) : Boolean
+    fun isArticleInDb(article : Article) : MutableLiveData<Boolean>
     {
-        var vretour = false;
-        Log.i(TAG, "--- isArticleInDb: On vérifie que l'article ${article.id} est dans la BDD ... ---");
-        viewModelScope.launch(Dispatchers.IO ) {
-            var articleInDb = articleDAO.selectbyId(article.id);
-            Log.i(TAG, "--- isArticleInDb: Résultat du select : ${articleInDb.toString()} ---");
-            if (articleInDb != null)
-            {
-                Log.i(TAG, "--- isArticleInDb: L'article ${article.id} est dans la BDD ! ---");
-                //isFavorite.postValue(true);
-                vretour = true;
+        var vretour = MutableLiveData(false);
+            Log.i(
+                TAG,
+                "--- isArticleInDb: On vérifie que l'article ${article.id} est dans la BDD ... ---"
+            );
+            viewModelScope.launch(Dispatchers.IO) {
+                var articleInDb = articleDAO.selectbyId(article.id);
+                Log.i(TAG, "--- isArticleInDb: Résultat du select : ${articleInDb.toString()} ---");
+                if (articleInDb != null) {
+                    Log.i(TAG, "--- isArticleInDb: L'article ${article.id} est dans la BDD ! ---");
+                    //isFavorite.postValue(true);
+                    vretour.postValue(true);
+                } else {
+                    Log.i(
+                        TAG,
+                        "--- isArticleInDb: L'article ${article.id} n'est pas dans la BDD ! ---"
+                    );
+                    //isFavorite.postValue(false);
+                    vretour.postValue(false);
+                }
             }
-            else
-            {
-                Log.i(TAG, "--- isArticleInDb: L'article ${article.id} n'est pas dans la BDD ! ---");
-                //isFavorite.postValue(false);
-                vretour = false;
-            }
-        }
         return vretour;
     }
 

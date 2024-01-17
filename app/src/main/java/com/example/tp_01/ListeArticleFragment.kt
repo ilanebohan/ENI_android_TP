@@ -11,12 +11,13 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.navigation.Navigation
-import com.example.tp_01.bo.Article
-import com.example.tp_01.repository.ArticleRepository
-import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
-import com.example.tp_01.viewmodel.DetailArticleViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.tp_01.adapter.CustomAdapter
+import com.example.tp_01.bo.Article
+import com.example.tp_01.viewmodel.ArticlesViewModel
 import com.example.tp_01.viewmodel.ListeArticleViewModel
 
 // TODO: Rename parameter arguments, choose names that match
@@ -51,57 +52,43 @@ class ListeArticleFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         vmListe.getArticlesList();
 
-        if (vmListe.articlesFromMemory.value?.isEmpty() == true)
-        {
-            // AUCUN ARTICLE
-        }
-        else
-        {
-            for (article in vmListe.articlesFromMemory.value!!) {
-                //listeNoms += article.titre + "\n";
-                val tv = TextView(context);
-                tv.text = article.titre;
+        // getting the recyclerview by its id
+        val recyclerview = view.findViewById<RecyclerView>(R.id.recyclerViewArticles)
 
-                view?.findViewById<LinearLayout>(R.id.linearLayoutArticles)?.addView(tv);
+        // this creates a vertical layout Manager
+        recyclerview.layoutManager = LinearLayoutManager(this.context)
 
-                tv.setOnClickListener{
-                    val intent = Intent(Intent.ACTION_WEB_SEARCH);
-                    intent.putExtra("query", "eni-shop"+ article.titre);
-                    startActivity(intent);
-                }
+        // ArrayList of class ItemsViewModel
+        var data = vmListe.articlesFromMemory.value?.toList();
 
-            }
+        // This will pass the ArrayList to our Adapter
+        val adapter = data?.let { CustomAdapter(it) }
 
-        }
-
-        view.findViewById<Button>(R.id.btn_goToDetails).setOnClickListener {
-
-            val rnds = (0..vmListe.articlesFromMemory.value!!.size-1).random() // generated random from 0 to 10 included
-            val article = vmListe.articlesFromMemory.value!![rnds];
-
-            Log.i(TAG, "onViewCreated: " + article.toString());
-            val direction = ListeArticleFragmentDirections.actionListeToDetails(article)
-            Navigation.findNavController(view).navigate(direction)
-        }
+        // Setting the Adapter with the recyclerview
+        recyclerview.adapter = adapter
 
 
         view.findViewById<Button>(R.id.btn_articlesFav).setOnClickListener {
-            for (article in vmListe.ListeArticles.value!!) {
-                //listeNoms += article.titre + "\n";
-                val tv = TextView(context);
-                tv.text = article.titre;
+            /*for (article in vmListe.ListeArticles.value!!) {
+                data.add(article)
+            }*/
 
-                view?.findViewById<LinearLayout>(R.id.linearLayoutArticles)?.addView(tv);
+            data = data?.toMutableList();
+            data as MutableList<Article> += vmListe.ListeArticles.value!!;
 
-                tv.setOnClickListener{
-                    val intent = Intent(Intent.ACTION_WEB_SEARCH);
-                    intent.putExtra("query", "eni-shop"+ article.titre);
-                    startActivity(intent);
-                }
-
-            }
 
         }
+
+        // set onClickListener for recyclerview items
+        if (adapter != null) {
+            adapter.onItemClick = { article ->
+                Log.i(TAG, "onViewCreated: " + article.toString());
+                val direction = ListeArticleFragmentDirections.actionListeToDetails(article)
+                Navigation.findNavController(view).navigate(direction)
+            }
+        }
+
+
     }
 
 }
