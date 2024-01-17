@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.navigation.Navigation
@@ -19,6 +20,7 @@ import com.example.tp_01.adapter.CustomAdapter
 import com.example.tp_01.bo.Article
 import com.example.tp_01.viewmodel.ArticlesViewModel
 import com.example.tp_01.viewmodel.ListeArticleViewModel
+import kotlin.math.log
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,35 +61,30 @@ class ListeArticleFragment : Fragment() {
         recyclerview.layoutManager = LinearLayoutManager(this.context)
 
         // ArrayList of class ItemsViewModel
-        var data = vmListe.articlesFromMemory.value?.toList();
+        var data = vmListe.articlesFromAPI.value?.toList();
+        Log.i(TAG, "onViewCreated: AVANT DATA ASSIGNEMENT ")
+        vmListe.fetchArticlesFromAPI().observe(viewLifecycleOwner) {
+            data = it;
+            // This will pass the ArrayList to our Adapter
+            val adapter = data?.let { CustomAdapter(it) }
 
-        // This will pass the ArrayList to our Adapter
-        val adapter = data?.let { CustomAdapter(it) }
+            // Setting the Adapter with the recyclerview
+            recyclerview.adapter = adapter
 
-        // Setting the Adapter with the recyclerview
-        recyclerview.adapter = adapter
+            view.findViewById<Button>(R.id.btn_articlesFav).setOnClickListener {
+                data = data?.toMutableList();
+                data as MutableList<Article> += vmListe.ListeArticles.value!!;
+            }
 
-
-        view.findViewById<Button>(R.id.btn_articlesFav).setOnClickListener {
-            /*for (article in vmListe.ListeArticles.value!!) {
-                data.add(article)
-            }*/
-
-            data = data?.toMutableList();
-            data as MutableList<Article> += vmListe.ListeArticles.value!!;
-
-
-        }
-
-        // set onClickListener for recyclerview items
-        if (adapter != null) {
-            adapter.onItemClick = { article ->
-                Log.i(TAG, "onViewCreated: " + article.toString());
-                val direction = ListeArticleFragmentDirections.actionListeToDetails(article)
-                Navigation.findNavController(view).navigate(direction)
+            // set onClickListener for recyclerview items
+            if (adapter != null) {
+                adapter.onItemClick = { article ->
+                    Log.i(TAG, "onViewCreated: " + article.toString());
+                    val direction = ListeArticleFragmentDirections.actionListeToDetails(article)
+                    Navigation.findNavController(view).navigate(direction)
+                }
             }
         }
-
 
     }
 

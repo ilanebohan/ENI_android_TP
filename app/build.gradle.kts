@@ -43,6 +43,8 @@ android {
 }
 
 dependencies {
+
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0")
     // for adding recyclerview
     implementation ("androidx.recyclerview:recyclerview:1.2.0")
 

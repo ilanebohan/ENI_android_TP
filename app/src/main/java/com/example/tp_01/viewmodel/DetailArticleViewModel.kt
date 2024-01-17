@@ -1,5 +1,6 @@
 package com.example.tp_01.viewmodel
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,6 +33,7 @@ class DetailArticleViewModel(private val articleDAO: ArticleDAO) : ViewModel() {
         daoMemory.delete(article);
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun isArticleInDb(article : Article) : MutableLiveData<Boolean>
     {
         var vretour = MutableLiveData(false);
